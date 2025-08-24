@@ -1,3 +1,25 @@
+import { fetchPost } from "../API/api";
+import { useQuery } from "@tanstack/react-query";
+
 export const FetchRQ = () => {
-  return <h1>FetchRQ Page</h1>;
+  const { data } = useQuery({
+    queryKey: ["posts"],
+    queryFn: fetchPost,
+  });
+
+  return (
+    <div>
+      <ul>
+        {data?.map((curElem) => {
+          const { id, title, body } = curElem;
+          return (
+            <li key={id}>
+              <p>{title}</p>
+              <p>{body}</p>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
 };
