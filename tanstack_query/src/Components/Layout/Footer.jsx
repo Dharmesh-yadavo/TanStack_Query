@@ -1,3 +1,7 @@
 export const Footer = () => {
-  return <h1>Footer Page</h1>;
+  return (
+    <footer>
+      <p>copyright @dharmeshYadav</p>
+    </footer>
+  );
 };
