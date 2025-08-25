@@ -6,7 +6,7 @@ export const FetchIndv = () => {
   const { id } = useParams();
 
   const { data, isPending, isError, error } = useQuery({
-    queryKey: ["posts"], // UseState
+    queryKey: ["posts", id], // UseState
     queryFn: () => fetchIndvData(id), // UseEffect
   });
 
