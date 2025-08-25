@@ -1,25 +1,38 @@
 import { NavLink } from "react-router-dom";
-import { fetchPost } from "../API/api";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { deletePost, fetchPost } from "../API/api";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useState } from "react";
 
 export const FetchRQ = () => {
-  //!
   const [pageNumber, setPageNumber] = useState(0);
+  //! new
+  const queryClient = useQueryClient();
 
   const { data, isPending, isError, error } = useQuery({
-    //! update
     queryKey: ["posts", pageNumber], // UseState
     queryFn: () => fetchPost(pageNumber), // UseEffect
     // gcTime: 10000, // you can change time from here , default is 5min
     // staleTime: 5000,
     // refetchInterval: 1000,
     // refetchIntervalInBackground: true,
-    //! new
     placeholderData: keepPreviousData,
   });
 
-  // console.log(data);
+  //! Mutation
+  const deleteMutation = useMutation({
+    mutationFn: (id) => deletePost(id),
+    onSuccess: (data, id) => {
+      // console.log(data);
+      queryClient.setQueryData(["posts", pageNumber], (curElem) => {
+        return curElem?.filter((post) => post.id !== id);
+      });
+    },
+  });
 
   // Conditional rendering based on loading, error, and posts data
   if (isPending) return <p> Loading....</p>;
@@ -38,6 +51,10 @@ export const FetchRQ = () => {
                   <p>{title}</p>
                   <p>{body}</p>
                 </NavLink>
+                {/* DELETE POST BUTTON  */}
+                <button onClick={() => deleteMutation.mutate(id)}>
+                  Delete
+                </button>
               </li>
             );
           })

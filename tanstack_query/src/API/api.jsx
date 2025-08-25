@@ -19,3 +19,9 @@ export const fetchIndvData = async (id) => {
     console.log(error);
   }
 };
+
+// to delete post
+
+export const deletePost = async (id) => {
+  return await api.delete(`/posts/${id}`);
+};
