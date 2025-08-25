@@ -6,7 +6,9 @@ export const FetchRQ = () => {
     queryKey: ["posts"], // UseState
     queryFn: fetchPost, // UseEffect
     // gcTime: 10000, // you can change time from here , default is 5min
-    staleTime: 5000,
+    // staleTime: 5000,
+    refetchInterval: 1000,
+    refetchIntervalInBackground: true,
   });
 
   // Conditional rendering based on loading, error, and posts data
