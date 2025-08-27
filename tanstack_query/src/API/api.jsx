@@ -21,7 +21,11 @@ export const fetchIndvData = async (id) => {
 };
 
 // to delete post
-
 export const deletePost = async (id) => {
   return await api.delete(`/posts/${id}`);
+};
+
+// to update the post ---> for update we can use put, patch
+export const updatePost = (id) => {
+  return api.patch(`/posts/${id}`, { title: "I have Updated" });
 };

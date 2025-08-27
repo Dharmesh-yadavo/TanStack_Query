@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { deletePost, fetchPost } from "../API/api";
+import { deletePost, fetchPost, updatePost } from "../API/api";
 import {
   keepPreviousData,
   useMutation,
@@ -23,13 +23,28 @@ export const FetchRQ = () => {
     placeholderData: keepPreviousData,
   });
 
-  //! Mutation
+  //! Mutation function for deleting the post
   const deleteMutation = useMutation({
     mutationFn: (id) => deletePost(id),
     onSuccess: (data, id) => {
       // console.log(data);
       queryClient.setQueryData(["posts", pageNumber], (curElem) => {
         return curElem?.filter((post) => post.id !== id);
+      });
+    },
+  });
+
+  //! Mutation function for updating the post
+  const updateMutation = useMutation({
+    mutationFn: (id) => updatePost(id),
+    onSuccess: (apiData, postId) => {
+      // console.log(apiData, postId);
+      queryClient.setQueryData(["posts", pageNumber], (postData) => {
+        return postData?.map((curPost) => {
+          return curPost.id === postId
+            ? { ...curPost, title: apiData.data.title }
+            : curPost;
+        });
       });
     },
   });
@@ -54,6 +69,9 @@ export const FetchRQ = () => {
                 {/* DELETE POST BUTTON  */}
                 <button onClick={() => deleteMutation.mutate(id)}>
                   Delete
+                </button>
+                <button onClick={() => updateMutation.mutate(id)}>
+                  Update
                 </button>
               </li>
             );
